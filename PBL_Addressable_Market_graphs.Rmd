@@ -16,10 +16,10 @@ require(plyr)
 require(Hmisc)
 require(lubridate)
 options(error=recover)
-# Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
-Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
-# setwd("K:/Development/PBL")
-setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
+Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
+# Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
+setwd("K:/Development/PBL")
+# setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
 source(paste(Path,"lookups.r",sep=""))
 source(paste(Path,"helper.r",sep=""))
 
