@@ -16,10 +16,10 @@ require(plyr)
 require(Hmisc)
 require(lubridate)
 options(error=recover)
-Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
-# Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
-setwd("K:/Development/PBL")
-# setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
+# Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
+Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
+# setwd("K:/Development/PBL")
+setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
 source(paste(Path,"lookups.r",sep=""))
 source(paste(Path,"helper.r",sep=""))
 
@@ -1491,10 +1491,11 @@ write.csv(OtherProductsList,paste("Output\\",paste("Other_Products"
                                   sep=""))
 
 
-PBLscoreTable<-ddply(PBLscore, c("Fiscal.Year"
+DLAscoreTablePSC<-ddply(DLApblScore, c("Fiscal.Year"
                                  ,"Customer"
                                  ,"SubCustomer"
                                  ,"AddressCat"
+#                                  ,"MajorCommandName"
                                  ,"ProductOrServiceArea"
                                  ,"ProductOrServiceCode"
                                  ,"ProductOrServiceCodeText"
@@ -1502,12 +1503,14 @@ PBLscoreTable<-ddply(PBLscore, c("Fiscal.Year"
                      ,summarise
                      ,Obligation.2014=sum(Obligation.2014)
                      )
-DLAscoreTable<-subset(PBLscoreTable,SubCustomer=="DLA" & Fiscal.Year>=as.Date("2013-09-30"))
-
-View(DLAscoreTable)
 
 
-write.csv(DLAscoreTable,paste(paste("Output\\DLA_addressable"
+DLAscoreTablePSC<-subset(DLAscoreTablePSC,SubCustomer=="DLA" & Fiscal.Year>=as.Date("2013-09-30"))
+
+View(DLAscoreTablePSC)
+
+
+write.csv(DLAscoreTablePSC,paste(paste("Output\\DLA_addressable"
                                     ,"Obligation_2014"
                                     ,"ProductOrServiceCode"
                                     ,"2012-2014"
@@ -1515,6 +1518,37 @@ write.csv(DLAscoreTable,paste(paste("Output\\DLA_addressable"
                                     )
                               ,".csv",
                               sep=""))
+
+
+
+DLAscoreTableMCC<-ddply(DLApblScore, c("Fiscal.Year"
+                                 ,"Customer"
+                                 ,"SubCustomer"
+                                 ,"AddressCat"
+                                 ,"MajorCommandName"
+                                 ,"ProductOrServiceArea"
+#                                  ,"ProductOrServiceCode"
+#                                  ,"ProductOrServiceCodeText"
+                                 )
+                     ,summarise
+                     ,Obligation.2014=sum(Obligation.2014)
+                     )
+
+
+DLAscoreTableMCC<-subset(DLAscoreTableMCC,SubCustomer=="DLA" & Fiscal.Year>=as.Date("2013-09-30"))
+
+View(DLAscoreTableMCC)
+
+
+write.csv(DLAscoreTableMCC,paste(paste("Output\\DLA_addressable"
+                                    ,"Obligation_2014"
+                                    ,"MajorCommandName"
+                                    ,"2012-2014"
+                                    ,sep="_"
+                                    )
+                              ,".csv",
+                              sep=""))
+
 # 
 # CompPolicyTable<-ddply(CompPolicy, c("Fiscal.Year"
 #     ,"Competition.sum"
