@@ -10,7 +10,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r Setup, echo=FALSE }
-debug(apply_lookups)
+
 require(ggplot2)
 require(stringr)
 require(plyr)
@@ -668,7 +668,7 @@ png(
 
 PBLscore2012<-subset(PBLscore,Fiscal.Year>=as.Date("2011-10-01"))
 PBLscore2012$Graph[PBLscore2012$MaxOfIsOfficialPBL=="Not PBL"]<-FALSE
-# debug(LatticePercentLineWrapper)
+
 # debug(LatticePercentLineWrapper)
 PBLgraph<-LatticePercentLineWrapper(
     "Addressable PBL category"
@@ -1070,7 +1070,6 @@ png(
     , res=300
     )
 
-# debug(LatticePercentLineWrapper)
 
 DLApblScore<-subset(DLApblScore,SubCustomer=="DLA"&year(Fiscal.Year)>2004)
 DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
@@ -1079,7 +1078,7 @@ DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
 DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
 # debug(PrepareLabelsAndColors)
 
-debug(LatticePlotWrapper)
+# debug(LatticePlotWrapper)
 PBLgraph<-LatticePlotWrapper(
     "Addressable Market Category"
     ,"DLA Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)"
