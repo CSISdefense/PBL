@@ -19,7 +19,7 @@ require(lubridate)
 options(error=recover)
 Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
 # Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
-setwd("K:/Development/PBL")
+# setwd("K:/Development/PBL")
 # setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
 source(paste(Path,"lookups.r",sep=""))
 source(paste(Path,"helper.r",sep=""))
@@ -700,6 +700,17 @@ PBLgraph<-PBLgraph+
 PBLgraph
 print(PBLgraph)
 #     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
+
+write.table(PBLscore2012
+            ,file=paste("Output\\PercentPBLbyComponentAndCategory.csv"
+                        ,sep=""
+            )
+            #   ,header=TRUE
+            , sep=","
+            , row.names=FALSE
+            , append=FALSE
+)
+
 
 dev.off()
 
