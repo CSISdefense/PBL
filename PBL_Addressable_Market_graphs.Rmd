@@ -9,6 +9,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
+#Setup
 ```{r Setup, echo=FALSE }
 
 library(ggplot2)
@@ -17,10 +18,8 @@ library(plyr)
 library(Hmisc)
 library(lubridate)
 options(error=recover)
-Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
-# Path<-"C:\\Users\\Greg Sanders\\SkyDrive\\Documents\\R Scripts and Data SkyDrive\\"
-# setwd("K:/Development/PBL")
-# setwd("C:\\Users\\Greg Sanders\\Documents\\Development\\PBL")
+# Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
+Path<-"C:/Users/gsand_000.ALPHONSE/Documents/Development/R-scripts-and-data/"
 source(paste(Path,"lookups.r",sep=""))
 source(paste(Path,"helper.r",sep=""))
 
@@ -36,16 +35,8 @@ note.text.size<-1.40
 ```
 
 You can also embed plots, for example:
-
+##Read In Files Overall
 ```{r ReadInFilesOverall, echo=FALSE }
-## ("Data\\defense_summary_SP_CompetitionHistoryBucketSubCustomerRegime.csv", sep = """) Neither the computer nor myself can find this file in (K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\Data)
-
-# PBLscore  <- read.csv(
-#     paste("Data\\Contract_SP_ContractPBLscoreSubCustomer.csv", sep = ""),
-#     header = TRUE, sep = ",", dec = ".", strip.white = TRUE, 
-#     na.strings = c("NULL","NA",""),
-#     stringsAsFactors = TRUE
-#     )
 
 PBLscore  <- read.csv(
     paste("Data\\Contract_SP_ContractPBLscoreSubCustomerProdServ.txt", sep = ""),
@@ -61,19 +52,12 @@ names(PBLscore)
 str(PBLscore)
 
 Coloration<-read.csv(
-    paste(Path,"Lookups\\","lookup_coloration.csv",sep=""),
+    paste("https://raw.githubusercontent.com/CSISdefense/Lookup-Tables/master/data/style/",
+          "Lookup_Coloration.csv",sep=""),
     header=TRUE, sep=",", na.strings="", dec=".", strip.white=TRUE, 
     stringsAsFactors=FALSE
     )
 
-Coloration<-ddply(Coloration
-                  , c(.(R), .(G), .(B))
-                  , transform
-                  , ColorRGB=as.character(
-                      if(min(is.na(c(R,G,B)))) {NA} 
-                      else {rgb(max(R),max(G),max(B),max=255)}
-                      )
-                  )
 
 # debug(LatticePercentLineWrapper)
 PBLscore$Graph<-TRUE
@@ -198,12 +182,12 @@ PBLscore$LengthSingleScore[PBLscore$LengthSingleScore==3]<-2
 
 
 
-
-
+#Calculate Score
+##Max of Is Only One Source
 
 ```{r MaxOfIsOnlyOneSource}        
 
-PBLscore<-ddply(PBLscore, .(MaxOfIsOnlyOneSource), transform, pObligation=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(MaxOfIsOnlyOneSource), transform, pObligation=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -216,7 +200,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( MaxOfIsOnlyOneSource  ~ .)#,
 #scales = "free_y",
@@ -227,7 +211,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 
 ```{r MaxOfPSCscore}        
-PBLscore<-ddply(PBLscore, .(MaxOfPSCscore), transform, pObligation=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(MaxOfPSCscore), transform, pObligation=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -240,7 +224,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( MaxOfPSCscore  ~ .)#,
 #                 #scales = "free_y",
@@ -254,7 +238,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ```{r MaxOfIsSingleAward}        
 
-PBLscore<-ddply(PBLscore, .(MaxOfIsSingleAward), transform, pObligation=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(MaxOfIsSingleAward), transform, pObligation=Obligation.2016/sum(Obligation.2016))
 
 
 
@@ -269,7 +253,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ MaxOfIsSingleAward  )#,
 #                 #scales = "free_y",
@@ -282,7 +266,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ```{r PricingScore}        
 
-PBLscore<-ddply(PBLscore, .(PricingScore), transform, pObligation=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(PricingScore), transform, pObligation=Obligation.2016/sum(Obligation.2016))
 
 
 
@@ -297,7 +281,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ PricingScore  )#,
 #                 #scales = "free_y",
@@ -309,10 +293,10 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ```
 
-
+##Length Score
 ```{r LengthScore}        
 
-PBLscore<-ddply(PBLscore, .(LengthScore), transform, pObligation=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(LengthScore), transform, pObligation=Obligation.2016/sum(Obligation.2016))
 
 
 
@@ -327,14 +311,14 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( LengthScore  ~ .)#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
 # 
 
-PBLscore<-ddply(PBLscore, .(LengthScore,MaxOfIsSingleAward), transform, pObligationLS=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(LengthScore,MaxOfIsSingleAward), transform, pObligationLS=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -347,7 +331,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 PBLscore$LengthSingleScore<-PBLscore$LengthScore+PBLscore$MaxOfIsSingleAward
 
 
-PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -358,7 +342,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
 
 
-PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -370,7 +354,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ```
 
-
+##Addressable Category
 ```{r AddressCat}        
 
 PBLscore$LengthSingleScore<-PBLscore$LengthScore+PBLscore$MaxOfIsSingleAward
@@ -405,7 +389,7 @@ PBLscore$MaxOfIsOfficialPBL[is.na(PBLscore$MaxOfIsOfficialPBL)]<-"Not PBL"
 # #                 scales = "free_y",
 # #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
 
-PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -418,7 +402,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ JointScore  )#,
 #                 #scales = "free_y",
@@ -428,7 +412,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
@@ -436,7 +420,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = PBLscore,
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
@@ -446,19 +430,19 @@ ggplot(#"MaxOfIsOfficialPBL"
 ```
 
 
-
+##Joint Score
 ```{r JointScore}        
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = PBLscore,
-    aes_string(x = "Fiscal.Year", weight="Obligation.2014", fill="AddressCat"),
+    aes_string(x = "Fiscal.Year", weight="Obligation.2016", fill="AddressCat"),
     ) + geom_bar() + 
     facet_grid( SubCustomer.detail  ~ .) 
 #                 scales = "free_y",
 #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
 
 
-PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2014/sum(Obligation.2014))
+PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2016/sum(Obligation.2016))
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
@@ -471,7 +455,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ JointScore  )#,
 #                 #scales = "free_y",
@@ -481,7 +465,7 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
@@ -489,14 +473,15 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = PBLscore,
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
     ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
 
 ```
 
-
+#Addressable Market Visualization
+##Percent Bar
 ```{r percentbar}  
 
 png(
@@ -539,8 +524,8 @@ png(
 
 
 PBLscore2012<-subset(PBLscore,Fiscal.Year>=as.Date("2011-10-01"))
-PBLscore2012<-ddply(PBLscore2012, .(JointScore), transform, pObligationJ=Obligation.2014/sum(Obligation.2014))
-
+PBLscore2012<-ddply(PBLscore2012, .(JointScore), transform, pObligationJ=Obligation.2016/sum(Obligation.2016))
+# debug(LatticePlotWrapper)
 PBLgraph<-LatticePlotWrapper(
     ""
     ,""
@@ -591,6 +576,7 @@ dev.off()
 
 ```
 
+#PBL Percent Line
 
 ```{r PBLpercentline}        
 png(
@@ -621,7 +607,7 @@ PBLgraph<-LatticePercentLineWrapper(
     ,PBLscore
     ,NA
     ,"Fiscal.Year"
-    ,"Obligation.2014"
+    ,"Obligation.2016"
     ,"AddressCat"
     ,"SubCustomer.detail"
     #     ,"USDATL"
@@ -634,7 +620,7 @@ PBLgraph<-LatticePercentLineWrapper(
 
 PBLgraph<-PBLgraph+
     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-    scale_x_date(labels=date_format("'%y"), limits=c(as.Date("2000-01-01"),as.Date("2014-10-01")),breaks=date_breaks("year"))
+    scale_x_date(labels=date_format("'%y"), limits=c(as.Date("2000-01-01"),as.Date("2016-10-01")),breaks=date_breaks("year"))
 
 PBLgraph
 print(PBLgraph)
@@ -645,7 +631,7 @@ dev.off()
 
 
 
-
+##Percent PBL by Copmponent and Category
 ```{r PercentPBLbyComponentAndCategory}
 png(
     paste( paste("Output\\DoD_components"
@@ -679,7 +665,7 @@ PBLgraph<-LatticePercentLineWrapper(
     ,subset(PBLscore2012,AddressCat!="No history [0-3]")
     ,NA
     ,"Fiscal.Year"
-    ,"Obligation.2014"
+    ,"Obligation.2016"
     ,"MaxOfIsOfficialPBL"
     ,"AddressCat"
     ,"SubCustomer.detail"
@@ -716,775 +702,16 @@ dev.off()
 
 ```
 
-
-```{r DLAreadInFilesOverall, echo=FALSE }
-## ("Data\\defense_summary_SP_CompetitionHistoryBucketSubCustomerRegime.csv", sep = """) Neither the computer nor myself can find this file in (K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\Data)
-
-
-DLApblScore  <- read.csv(
-    paste("Data\\DLA_Contract_SP_ContractPBLscoreSubCustomerProdServOffice.txt", sep = ""),
-    header = TRUE, sep = "\t", dec = ".", strip.white = TRUE, row.names=NULL,
-    na.strings = c("NULL","NA",""),
-    stringsAsFactors = TRUE
-    )
-
-DLApblScore<-apply_lookups(Path,DLApblScore)
-DLApblScore<-subset(DLApblScore,year(Fiscal.Year)>=2000&SubCustomer=="DLA")
-# View(DLApblScore[is.na(DLApblScore$MajorCommandName),])
-names(DLApblScore)
-str(DLApblScore)
-
-Coloration<-read.csv(
-    paste(Path,"Lookups\\","lookup_coloration.csv",sep=""),
-    header=TRUE, sep=",", na.strings="", dec=".", strip.white=TRUE, 
-    stringsAsFactors=FALSE
-    )
-
-Coloration<-ddply(Coloration
-                  , c(.(R), .(G), .(B))
-                  , transform
-                  , ColorRGB=as.character(
-                      if(min(is.na(c(R,G,B)))) {NA} 
-                      else {rgb(max(R),max(G),max(B),max=255)}
-                      )
-                  )
-
-# debug(LatticePercentLineWrapper)
-DLApblScore$Graph<-TRUE
-
-
-DLApblScore$SubCustomer.component<-factor(DLApblScore$SubCustomer.component,
-                                          levels=c("Army","Navy","Air Force","DLA",
-                                                   "MDA","MilitaryHealth","Additional DoD Components"),
-                                          labels=c("Army","Navy","Air Force","DLA",
-                                                   "MDA","Military\nHealth","Additional\nDoD\nComponents"),
-                                          ordered=TRUE)
-DLApblScore$SubCustomer.component<-droplevels(DLApblScore$SubCustomer.component)
-
-
-DLApblScore$SubCustomer.detail<-factor(DLApblScore$SubCustomer.detail,
-                                       levels=c("Army","Navy","Air Force","DLA",
-                                                "Other DoD"),
-                                       labels=c("Army","Navy","Air Force","DLA",
-                                                "Other DoD"),
-                                       ordered=TRUE)
-DLApblScore$SubCustomer.detail<-droplevels(DLApblScore$SubCustomer.detail)
-
-
-
-DLApblScore$MaxOfIsPerformanceBasedLogistics<-factor(DLApblScore$MaxOfIsPerformanceBasedLogistics,
-                                                     levels=c(0
-                                                              ,1
-                                                              ),
-                                                     labels=c("Not PBL"
-                                                              ,"All PBL"
-                                                              ),
-                                                     ordered=TRUE)
-
-DLApblScore$MaxOfIsPerformanceBasedLogistics[is.na(DLApblScore$MaxOfIsPerformanceBasedLogistics)]<-"Not PBL"
-
-
-DLApblScore$MaxOfIsOfficialPBL<-factor(DLApblScore$MaxOfIsOfficialPBL,
-                                       exclude=NULL,
-                                       levels=c(1,
-                                                0,
-                                                NA
-                                                ),
-                                       labels=c("Official PBL"
-                                                ,"Other"
-                                                ,"Not PBL"
-                                                ),
-                                       ordered=TRUE)
-
-DLApblScore$MaxOfIsOfficialPBL[is.na(DLApblScore$MaxOfIsOfficialPBL)]<-"Not PBL"
-
-DLApblScore$MaxOfPSCscore[is.na(DLApblScore$MaxOfPSCscore)]<-0
-DLApblScore$LengthSingleScore<-DLApblScore$LengthScore+DLApblScore$MaxOfIsSingleAward
-DLApblScore$LengthSingleScore[DLApblScore$LengthSingleScore==3]<-2
-
-
-```
-
-
-```{r DLAaddressCat}        
-
-DLApblScore$LengthSingleScore<-DLApblScore$LengthScore+DLApblScore$MaxOfIsSingleAward
-DLApblScore$LengthSingleScore[DLApblScore$LengthSingleScore==3]<-2
-DLApblScore$MaxOfPSCscore[is.na(DLApblScore$MaxOfPSCscore)]<-0
-DLApblScore$JointScore<-DLApblScore$LengthSingleScore+DLApblScore$PricingScore+DLApblScore$MaxOfPSCscore+DLApblScore$MaxOfIsOnlyOneSource*2
-DLApblScore$JointScore[is.na(DLApblScore$JointScore)|DLApblScore$JointScore<0]<-0
-DLApblScore$AddressCat<- cut2(DLApblScore$JointScore,cuts=c(4,6,9))
-
-
-DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,
-                               #                                     exclude=NULL,
-                               levels=c("[ 0, 4)",
-                                        "[ 4, 6)",
-                                        "[ 6, 9)",
-                                        "[ 9,10]"
-                                        ),
-                               labels=c("No history [0-3]"
-                                        ,"Outer edge [4-5]"
-                                        ,"Uncommon [6-8]"
-                                        ,"Promising [9-10]"
-                                        ),
-                               ordered=TRUE)
-
-DLApblScore$MaxOfIsOfficialPBL[is.na(DLApblScore$MaxOfIsOfficialPBL)]<-"Not PBL"
-
-# ggplot(#"MaxOfIsOfficialPBL"
-#   data = subset(DLApblScore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-#   aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationJ", fill="MaxOfIsOfficialPBL"),
-#   ) + geom_bar()#binwidth=1 + 
-#     facet_grid( . ~ JointScore) 
-# #                 scales = "free_y",
-# #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
-
-DLApblScore<-ddply(DLApblScore, .(AddressCat), transform, pObligationA=Obligation.2014/sum(Obligation.2014))
-
-ggplot(#"MaxOfIsOfficialPBL"
-    data = subset(DLApblScore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationA", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()#binwidth=1 + 
-    facet_grid( . ~ AddressCat) 
-#                 scales = "free_y",
-#                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
-
-
-ggplot(#"MaxOfIsOfficialPBL"
-    data = subset(DLApblScore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()#binwidth=1 + 
-    facet_grid( . ~ JointScore  )#,
-#                 #scales = "free_y",
-#                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
-# 
-
-
-ggplot(#"MaxOfIsOfficialPBL"
-    data = subset(DLApblScore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()#binwidth=1 + 
-    facet_grid( . ~ AddressCat  )#,
-
-
-
-ggplot(#"MaxOfIsOfficialPBL"
-    data = DLApblScore,
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2014", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()#binwidth=1 + 
-    facet_grid( . ~ AddressCat  )#,
-
-
-
-
-```
-
-
-
-```{r DLAbarOverall}  
-
-png(
-    paste( paste("Output\\DoD_components"
-                 ,"DLA"
-                 ,"PBL_addressable"
-                 ,"Bar"
-                 ,"Annual"
-                 ,sep="_"
-                 )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=4
-    , units='in'
-    , pointsize=12
-    , res=300
-    )
-
-# debug(LatticePercentLineWrapper)
-
-PBLgraph<-LatticePlotWrapper(
-    "AddressablePBL"
-    ,""
-    ,"Fiscal Year"
-    ,"Contract Obligations, 2014 Billions"
-    ,Coloration
-    ,subset(DLApblScore,SubCustomer.detail=="DLA")
-    ,NA
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"AddressCat"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-# #900 500 updat efirst bitmap
-# 
-# 
-# PBLgraph<-PBLgraph+aes(size=y.variable)
-# # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-#     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-# PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-#     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-#     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-dev.off()
-
-
-```
-
-
-
-```{r DLAbarProdServ}  
-
-png(
-    paste( paste("Output\\DoD_components"
-                 ,"DLA"
-                 ,"PBL_addressable"
-                 ,"Bar"
-                 ,"Annual"
-                 ,sep="_"
-                 )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=4
-    , units='in'
-    , pointsize=12
-    , res=300
-    )
-
-# debug(LatticePercentLineWrapper)
-
-
-DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
-DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
-#Flip the order to put promising on bottom.
-DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
-
-
-PBLgraph<-LatticePlotWrapper(
-    "Addressable Market Category"
-    ,"DLA Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)"
-    ,"Fiscal Year"
-    ,"Contract Obligations, 2014 Billions"
-    ,Coloration
-    ,DLApblScore
-    ,NA
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"ProductOrServiceArea.DLA"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-# #900 500 updat efirst bitmap
-# 
-# 
-PBLgraph<-PBLgraph+theme(legend.position="bottom")
-# # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-#     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-# PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-#     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-#     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-dev.off()
-
-
-```
-
-```{r DLAprodservPBLpercentline}        
-png(
-    paste( "Output\\" ,paste("DLA",
-                             "ProdServ",
-                             "PBL_addressable",
-                             "Percent",
-                             "Annual",
-                             sep="_"
-                             )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=5
-    , units='in'
-    , pointsize=12
-    , res=150
-    )
-
-
-DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
-DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
-# debug(LatticePercentLineWrapper)
-PBLgraph<-LatticePercentLineWrapper(
-    "Addressable PBL category"
-    ,""
-    ,"Fiscal Year"
-    ,"% of Component Obligations"
-    ,Coloration
-    ,DLApblScore
-    ,4
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"ProductOrServiceArea.DLA"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-
-
-# PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-
-PBLgraph<-PBLgraph+
-    theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-    scale_x_date(labels=date_format("'%y"), limits=c(as.Date("2000-01-01"),as.Date("2014-10-01")),breaks=date_breaks("year"))
-
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-
-dev.off()
-```
-
-
-```{r DLAmccPBLbar}  
-
-png(
-    paste( paste("Output\\DoD_components"
-                 ,"DLA"
-                 ,"PBL_addressable"
-                 ,"MajorCommand"
-                 ,"Bar"
-                 ,"Annual"
-                 ,sep="_"
-                 )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=4
-    , units='in'
-    , pointsize=12
-    , res=300
-    )
-
-
-DLApblScore<-subset(DLApblScore,SubCustomer=="DLA"&year(Fiscal.Year)>2004)
-DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
-DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
-#Flip the order to put promising on bottom.
-DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
-# debug(PrepareLabelsAndColors)
-
-# debug(LatticePlotWrapper)
-PBLgraph<-LatticePlotWrapper(
-    "Addressable Market Category"
-    ,"DLA Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)"
-    ,"Fiscal Year"
-    ,"Contract Obligations, 2014 Billions"
-    ,Coloration
-    ,DLApblScore
-    ,NA
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"MajorCommandName"#ContractingOfficeName
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-# #900 500 updat efirst bitmap
-# 
-# 
-PBLgraph<-PBLgraph+theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))
-# # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-#     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-# PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-#     theme(legend.position="bottom")+
-#     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-# PBLgraph<-facetAdjust(PBLgraph)
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-dev.off()
-
-
-```
-
-```{r DLAmccPBLpercentline}        
-png(
-    paste( "Output\\" ,paste("DLA",
-                             "MajorCommand",
-                             "PBL_addressable",
-                             "Percent",
-                             "Annual",
-                             sep="_"
-                             )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=5
-    , units='in'
-    , pointsize=12
-    , res=150
-    )
-
-DLApblScore<-subset(DLApblScore,SubCustomer=="DLA"&year(Fiscal.Year)>2004)
-DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
-DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
-# debug(LatticePercentLineWrapper)
-PBLgraph<-LatticePercentLineWrapper(
-    "Addressable PBL category"
-    ,""
-    ,"Fiscal Year"
-    ,"% of Component Obligations"
-    ,Coloration
-    ,DLApblScore
-    ,4
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"MajorCommandName"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-
-
-# PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-
-PBLgraph<-PBLgraph+
-    theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-    scale_x_date(labels=date_format("'%y"), limits=c(as.Date("2005-01-01"),as.Date("2014-10-01")),breaks=date_breaks("year"))
-
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-
-dev.off()
-```
-
-
-```{r DLAofficePBLbarByMCC}  
-#Flip the order to put promising on bottom.
-# DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
-
-for(m in unique(DLApblScore$MajorCommandName)){
-    MCCpblScore<-subset(DLApblScore,year(Fiscal.Year)>2004&MajorCommandName==m)
-    MCCpblScore$Graph[is.na(MCCpblScore$CSISofficeName.PBL)]<-FALSE
-    MCCpblScore$Graph[MCCpblScore$AddressCat=="No history [0-3]"]<-FALSE
-    if(any(MCCpblScore$Graph)){
-    png(
-      paste("Output\\",
-                     CleanFileName(paste("DoD_components"
-                                         ,"DLA"
-                                         ,"PBL_addressable"
-                                         ,"MajorCommand"
-                                         ,m
-                                         ,"Office"
-                                         ,"Bar"
-                                         ,"Annual"
-                                         ,sep="_"
-                                         ))
-                                   ,".png"
-                                   , sep=""
-                                   )
-                     , type="cairo"
-                     , width=7.5
-                     , height=5
-                     , units='in'
-                     , pointsize=12
-                     , res=300
-                     )
-               
-               # debug(LatticePercentLineWrapper)
-               
-#                debug(LatticePlotWrapper)
-               
-               PBLgraph<-LatticePlotWrapper(
-                   "Addressable Market Category"
-                   ,paste(m,"Contract Spending by Contracting Office \nand Addressable Market Category (No History Excluded)")
-                   ,"Fiscal Year"
-                   ,"Contract Obligations, 2014 Billions"
-                   ,Coloration
-                   ,MCCpblScore
-                   ,4
-                   ,"Fiscal.Year"
-                   ,"Obligation.2014"
-                   ,"AddressCat"
-                   ,"CSISofficeName.PBL"
-#                    ,"MajorCommandName"
-                   #     ,"StartDate"
-                   #     ,"EndDate"
-,DataLabels=FALSE
-                   )
-               # #900 500 updat efirst bitmap
-               # 
-               # 
-               PBLgraph<-PBLgraph+theme(legend.position="bottom")+
-    theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))
-#     PBLgraph<-PBLgraph+facet_wrap(MajorCommandName~ContractingOfficeName)
-               # # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-               #     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-               # PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-               #     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-               #     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-               PBLgraph
-               print(PBLgraph)
-               #     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-               dev.off()
-               }
-    }
-
-```
-
-```{r DLAofficePBLPercentLine}  
-#Flip the order to put promising on bottom.
-# DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
-
-for(m in unique(DLApblScore$MajorCommandName)){
-    MCCpblScore<-subset(DLApblScore,year(Fiscal.Year)>2004&MajorCommandName==m)
-    MCCpblScore$Graph[is.na(MCCpblScore$CSISofficeName.PBL)]<-FALSE
-    MCCpblScore$Graph[MCCpblScore$AddressCat=="No history [0-3]"]<-FALSE
-    if(any(MCCpblScore$Graph)){
-        
-
-    png(
-      paste("Output\\",
-                     CleanFileName(paste("DoD_components"
-                                         ,"DLA"
-                                         ,"PBL_addressable"
-                                         ,"MajorCommand"
-                                         ,m
-                                         ,"Office"
-                                         ,"Percent"
-                                         ,"Annual"
-                                         ,sep="_"
-                                         ))
-                                   ,".png"
-                                   , sep=""
-                                   )
-                     , type="cairo"
-                     , width=7.5
-                     , height=5
-                     , units='in'
-                     , pointsize=12
-                     , res=300
-                     )
-               
-               # debug(LatticePercentLineWrapper)
-               
-#                debug(LatticePlotWrapper)
-               
-        
-        
-# debug(LatticePercentLineWrapper)
-PBLgraph<-LatticePercentLineWrapper(
-    "Addressable PBL category"
-    ,""
-    ,"Fiscal Year"
-    ,"% of Component Obligations"
-    ,Coloration
-    ,MCCpblScore
-    ,4
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"CSISofficeName.PBL"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-
-
-# PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-
-PBLgraph<-PBLgraph+
-    theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-    scale_x_date(labels=date_format("'%y"), limits=c(as.Date("2005-01-01"),as.Date("2014-10-31")),breaks=date_breaks("year"))
-               # #900 500 updat efirst bitmap
-               # 
-               # 
-               
-#     PBLgraph<-PBLgraph+facet_wrap(MajorCommandName~ContractingOfficeName)
-               # # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-               #     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-               # PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-               #     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-               #     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-               PBLgraph
-               print(PBLgraph)
-               #     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-               dev.off()
-               }
-    }
-
-```
-
-
-```{r DLAbarproductsbyMCC}  
-for(m in unique(DLApblScore$MajorCommandName)){
-    MCCpblScore<-subset(DLApblScore,year(Fiscal.Year)>2004&MajorCommandName==m)
-    MCCpblScore$Graph[is.na(MCCpblScore$CSISofficeName.PBL)]<-FALSE
-    MCCpblScore$Graph[MCCpblScore$AddressCat=="No history [0-3]"]<-FALSE
-    if(any(MCCpblScore$Graph)){
-
-png(
-    paste( paste("Output\\DoD_components"
-                 ,"DLA"
-                 ,m
-                 
-                 ,"PBL_addressable"
-                 ,"Bar"
-                 ,"Annual"
-                 ,sep="_"
-                 )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=4
-    , units='in'
-    , pointsize=12
-    , res=300
-    )
-
-# debug(LatticePercentLineWrapper)
-
-#Flip the order to put promising on bottom.
-# MCCpblScore$AddressCat<-factor(MCCpblScore$AddressCat,rev(levels(MCCpblScore$AddressCat)))
-
-View(unique(subset(MCCpblScore, select=c("MajorCommandName","ContractingOfficeName"))))
-PBLgraph<-LatticePlotWrapper(
-    "Addressable Market Category"
-    ,paste(m,"Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)")
-    ,"Fiscal Year"
-    ,"Contract Obligations, 2014 Billions"
-    ,Coloration
-    ,MCCpblScore
-    ,NA
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"ProductOrServiceArea.DLA"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-# #900 500 updat efirst bitmap
-# 
-# 
-PBLgraph<-PBLgraph+theme(legend.position="bottom")+scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-# # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-#     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-# PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-#     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-#     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-dev.off()
-}
-}
-
-
-```
-
-
-
-
-```{r DLAbarproducts}  
-
-png(
-    paste( paste("Output\\DoD_components"
-                 ,"DLA"
-                 ,"PBL_addressable"
-                 ,"Bar"
-                 ,"Annual"
-                 ,sep="_"
-                 )
-           ,".png"
-           , sep=""
-           )
-    , type="cairo"
-    , width=7.5
-    , height=4
-    , units='in'
-    , pointsize=12
-    , res=300
-    )
-
-# debug(LatticePercentLineWrapper)
-
-DLApblScore<-subset(DLApblScore,SubCustomer=="DLA")
-DLApblScore$Graph[DLApblScore$ProductOrServiceArea=="Unlabeled"]<-FALSE
-DLApblScore$Graph[DLApblScore$AddressCat=="No history [0-3]"]<-FALSE
-#Flip the order to put promising on bottom.
-DLApblScore$AddressCat<-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
-
-View(unique(subset(DLApblScore, select=c("MajorCommandName","ContractingOfficeName"))))
-PBLgraph<-LatticePlotWrapper(
-    "Addressable Market Category"
-    ,"DLA Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)"
-    ,"Fiscal Year"
-    ,"Contract Obligations, 2014 Billions"
-    ,Coloration
-    ,DLApblScore
-    ,NA
-    ,"Fiscal.Year"
-    ,"Obligation.2014"
-    ,"AddressCat"
-    ,"ProductOrServiceArea.DLA"
-    #     ,"USDATL"
-    #     ,"StartDate"
-    #     ,"EndDate"
-    )
-# #900 500 updat efirst bitmap
-# 
-# 
-PBLgraph<-PBLgraph+theme(legend.position="bottom")
-# # PBLgraph+geom_vline(aes(xintercept=as.numeric(StartDate)))+geom_vline(aes(xintercept=as.numeric(EndDate)))
-#     PBLgraph<-PBLgraph+geom_rect(aes(xmin=StartDate, xmax=EndDate, ymin=-Inf, ymax=Inf),color="red",alpha=0,size=1)
-# PBLgraph<-PBLgraph+scale_y_continuous(limits=c(0,1),labels = percent_format())+
-#     theme(legend.position="bottom",axis.text.x = element_text(angle = 90, hjust = 1))+
-#     scale_x_date(labels=date_format("'%y"),breaks=date_breaks("year"))
-PBLgraph
-print(PBLgraph)
-#     PBLgraph+scale_fill_manual(values = alpha(c("red","blue"), .3))
-dev.off()
-
-
-```
-
-
-
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
+##Data Tables
 
 ```{r DataTables}
 
 ComponentsList<-subset(PBLscore, Fiscal.Year>=as.Date("2013-09-30") & ProductOrServiceArea=="Fuels" | MaxOfPSCscore == -2)
 
 write.csv(ComponentsList,paste("Output\\",paste("Commodity"
-                                                ,"Obligation_2014"
+                                                ,"Obligation_2016"
                                                 ,"ProductOrServiceCode"
-                                                ,"2012-2014"
+                                                ,"2012-2016"
                                                 ,sep="_"
                                                 )
                                ,".csv",
@@ -1494,90 +721,12 @@ write.csv(ComponentsList,paste("Output\\",paste("Commodity"
 OtherProductsList<-subset(PBLscore, Fiscal.Year>=as.Date("2013-09-30") & ProductOrServiceArea.DLA=="Other Products" & SubCustomer=="DLA")
 
 write.csv(OtherProductsList,paste("Output\\",paste("Other_Products"
-                                                   ,"Obligation_2014"
+                                                   ,"Obligation_2016"
                                                    ,"ProductOrServiceCode"
-                                                   ,"2012-2014"
+                                                   ,"2012-2016"
                                                    ,sep="_"
                                                    )
                                   ,".csv",
                                   sep=""))
-
-
-DLAscoreTablePSC<-ddply(DLApblScore, c("Fiscal.Year"
-                                 ,"Customer"
-                                 ,"SubCustomer"
-                                 ,"AddressCat"
-#                                  ,"MajorCommandName"
-                                 ,"ProductOrServiceArea"
-                                 ,"ProductOrServiceCode"
-                                 ,"ProductOrServiceCodeText"
-                                 )
-                     ,summarise
-                     ,Obligation.2014=sum(Obligation.2014)
-                     )
-
-
-DLAscoreTablePSC<-subset(DLAscoreTablePSC,SubCustomer=="DLA" & Fiscal.Year>=as.Date("2013-09-30"))
-
-View(DLAscoreTablePSC)
-
-
-write.csv(DLAscoreTablePSC,paste(paste("Output\\DLA_addressable"
-                                    ,"Obligation_2014"
-                                    ,"ProductOrServiceCode"
-                                    ,"2012-2014"
-                                    ,sep="_"
-                                    )
-                              ,".csv",
-                              sep=""))
-
-
-
-DLAscoreTableMCC<-ddply(DLApblScore, c("Fiscal.Year"
-                                 ,"Customer"
-                                 ,"SubCustomer"
-                                 ,"AddressCat"
-                                 ,"MajorCommandName"
-                                 ,"ProductOrServiceArea"
-#                                  ,"ProductOrServiceCode"
-#                                  ,"ProductOrServiceCodeText"
-                                 )
-                     ,summarise
-                     ,Obligation.2014=sum(Obligation.2014)
-                     )
-
-
-DLAscoreTableMCC<-subset(DLAscoreTableMCC,SubCustomer=="DLA" & Fiscal.Year>=as.Date("2013-09-30"))
-
-View(DLAscoreTableMCC)
-
-
-write.csv(DLAscoreTableMCC,paste(paste("Output\\DLA_addressable"
-                                    ,"Obligation_2014"
-                                    ,"MajorCommandName"
-                                    ,"2012-2014"
-                                    ,sep="_"
-                                    )
-                              ,".csv",
-                              sep=""))
-
-# 
-# CompPolicyTable<-ddply(CompPolicy, c("Fiscal.Year"
-#     ,"Competition.sum"
-#     ,"SubCustomer.component"
-#     ,"ATLpolicy")
-#     ,summarise
-#     ,Obligation.2014=sum(Obligation.2014)
-# )
-# write.csv(CompPolicyTable,paste(paste("DoD_components"
-#                  ,"Obligation_2014"
-#                  ,"Competition_sum
-#                  ,"ATLpolicy"
-#                  ,"Annual"
-#                  ,sep="_"
-#                  )
-#            ,".csv",
-#            sep=""))
-# 
 
 ```
