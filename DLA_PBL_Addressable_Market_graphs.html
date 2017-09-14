@@ -923,7 +923,7 @@ png(
 #Flip the order to put promising on bottom.
 # MCCpblScore$AddressCat&lt;-factor(MCCpblScore$AddressCat,rev(levels(MCCpblScore$AddressCat)))
 
-View(unique(subset(MCCpblScore, select=c(&quot;MajorCommandName&quot;,&quot;ContractingOfficeName&quot;))))
+#View(unique(subset(MCCpblScore, select=c(&quot;MajorCommandName&quot;,&quot;ContractingOfficeName&quot;))))
 PBLgraph&lt;-LatticePlotWrapper(
     &quot;Addressable Market Category&quot;
     ,paste(m,&quot;Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)&quot;)
@@ -1019,7 +1019,7 @@ DLApblScore$Graph[DLApblScore$AddressCat==&quot;No history [0-3]&quot;]&lt;-FALS
 #Flip the order to put promising on bottom.
 DLApblScore$AddressCat&lt;-factor(DLApblScore$AddressCat,rev(levels(DLApblScore$AddressCat)))
 
-View(unique(subset(DLApblScore, select=c(&quot;MajorCommandName&quot;,&quot;ContractingOfficeName&quot;))))
+#View(unique(subset(DLApblScore, select=c(&quot;MajorCommandName&quot;,&quot;ContractingOfficeName&quot;))))
 PBLgraph&lt;-LatticePlotWrapper(
     &quot;Addressable Market Category&quot;
     ,&quot;DLA Contract Spending by Product or Service Bucket \nand Addressable Market Category (No History Excluded)&quot;
@@ -1070,7 +1070,7 @@ dev.off()</code></pre>
 
 DLAscoreTablePSC&lt;-subset(DLAscoreTablePSC,SubCustomer==&quot;DLA&quot; &amp; Fiscal.Year&gt;=as.Date(&quot;2013-09-30&quot;))
 
-View(DLAscoreTablePSC)
+#View(DLAscoreTablePSC)
 
 
 write.csv(DLAscoreTablePSC,paste(paste(&quot;Output\\DLA_addressable&quot;
@@ -1100,7 +1100,7 @@ DLAscoreTableMCC&lt;-ddply(DLApblScore, c(&quot;Fiscal.Year&quot;
 
 DLAscoreTableMCC&lt;-subset(DLAscoreTableMCC,SubCustomer==&quot;DLA&quot; &amp; Fiscal.Year&gt;=as.Date(&quot;2013-09-30&quot;))
 
-View(DLAscoreTableMCC)
+#View(DLAscoreTableMCC)
 
 
 write.csv(DLAscoreTableMCC,paste(paste(&quot;Output\\DLA_addressable&quot;
