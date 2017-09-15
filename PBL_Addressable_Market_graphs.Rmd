@@ -1,5 +1,5 @@
 ---
-title: "ATLregime"
+title: "PBL Addressable Market"
 author: "Greg Sanders"
 date: "Friday, March 20, 2015"
 output: html_document
@@ -18,8 +18,16 @@ library(plyr)
 library(Hmisc)
 library(lubridate)
 options(error=recover)
-# Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
-Path<-"C:/Users/gsand_000.ALPHONSE/Documents/Development/R-scripts-and-data/"
+
+
+Path<-"K:\\2007-01 PROFESSIONAL SERVICES\\R scripts and data\\"
+if (!file.exists(paste(Path,"lookups.r",sep=""))){
+  Path<-"C:\\Users\\gsand_000.ALPHONSE\\Documents\\Development\\R-scripts-and-data\\"
+  if (!file.exists(paste(Path,"lookups.r",sep=""))){
+    stop("Don't know where to find lookups.r")
+  }
+} 
+
 source(paste(Path,"lookups.r",sep=""))
 source(paste(Path,"helper.r",sep=""))
 
@@ -66,17 +74,17 @@ PBLscore$Graph<-TRUE
 
 PBLscore$SubCustomer.component<-factor(PBLscore$SubCustomer.component,
                                        levels=c("Army","Navy","Air Force","DLA",
-                                                "MDA","MilitaryHealth","Additional DoD Components"),
+                                                "MDA","MilitaryHealth","Additional DoD Components","Uncategorized"),
                                        labels=c("Army","Navy","Air Force","DLA",
-                                                "MDA","Military\nHealth","Additional\nDoD\nComponents"),
+                                                "MDA","Military\nHealth","Additional\nDoD\nComponents","Uncategorized"),
                                        ordered=TRUE)
 PBLscore$SubCustomer.component<-droplevels(PBLscore$SubCustomer.component)
 
 PBLscore$SubCustomer.detail<-factor(PBLscore$SubCustomer.detail,
                                     levels=c("Army","Navy","Air Force","DLA",
-                                             "Other DoD"),
+                                             "Other DoD","Uncategorized"),
                                     labels=c("Army","Navy","Air Force","DLA",
-                                             "Other DoD"),
+                                             "Other DoD","Uncategorized"),
                                     ordered=TRUE)
 PBLscore$SubCustomer.detail<-droplevels(PBLscore$SubCustomer.detail)
 
@@ -191,8 +199,8 @@ PBLscore<-ddply(PBLscore, .(MaxOfIsOnlyOneSource), transform, pObligation=Obliga
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( MaxOfIsOnlyOneSource  ~ .)#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -200,8 +208,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( MaxOfIsOnlyOneSource  ~ .)#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -215,8 +223,8 @@ PBLscore<-ddply(PBLscore, .(MaxOfPSCscore), transform, pObligation=Obligation.20
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ MaxOfPSCscore  )#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -224,8 +232,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( MaxOfPSCscore  ~ .)#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -244,8 +252,8 @@ PBLscore<-ddply(PBLscore, .(MaxOfIsSingleAward), transform, pObligation=Obligati
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ MaxOfIsSingleAward  )#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -253,8 +261,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ MaxOfIsSingleAward  )#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -272,8 +280,8 @@ PBLscore<-ddply(PBLscore, .(PricingScore), transform, pObligation=Obligation.201
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ PricingScore  )#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -281,8 +289,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ PricingScore  )#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -302,8 +310,8 @@ PBLscore<-ddply(PBLscore, .(LengthScore), transform, pObligation=Obligation.2016
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( LengthScore  ~ .)#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -311,8 +319,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( LengthScore  ~ .)#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -322,8 +330,8 @@ PBLscore<-ddply(PBLscore, .(LengthScore,MaxOfIsSingleAward), transform, pObligat
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationLS", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationLS", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( LengthScore  ~ MaxOfIsSingleAward)#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -335,8 +343,8 @@ PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligat
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligation", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( LengthSingleScore  ~ .)#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -346,8 +354,8 @@ PBLscore<-ddply(PBLscore, .(LengthSingleScore), transform, pObligationLS=Obligat
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationLS", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationLS", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ LengthSingleScore )#,
 #scales = "free_y",
 # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -383,8 +391,8 @@ PBLscore$MaxOfIsOfficialPBL[is.na(PBLscore$MaxOfIsOfficialPBL)]<-"Not PBL"
 
 # ggplot(#"MaxOfIsOfficialPBL"
 #   data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-#   aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationJ", fill="MaxOfIsOfficialPBL"),
-#   ) + geom_bar()+#binwidth=1 + 
+#   aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationJ", fill="MaxOfIsOfficialPBL")
+#   ) + geom_bar()#binwidth=1 + 
 #     facet_grid( . ~ JointScore) 
 # #                 scales = "free_y",
 # #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
@@ -393,8 +401,8 @@ PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2016
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationA", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationA", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat) 
 #                 scales = "free_y",
 #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
@@ -402,8 +410,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ JointScore  )#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -412,16 +420,16 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
 
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = PBLscore,
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
 
@@ -446,8 +454,8 @@ PBLscore<-ddply(PBLscore, .(AddressCat), transform, pObligationA=Obligation.2016
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationA", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="pObligationA", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat) 
 #                 scales = "free_y",
 #                 space = "free_y")+ scale_y_continuous(expand = c(0.1,0.01)) #+scale_x_continuous(limits=c(0,10))
@@ -455,8 +463,8 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ JointScore  )#,
 #                 #scales = "free_y",
 #                # space = "free_y") #+ scale_y_continuous(expand = c(0,50)) +scale_x_continuous(limits=c(0,10))
@@ -465,16 +473,16 @@ ggplot(#"MaxOfIsOfficialPBL"
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = subset(PBLscore,MaxOfIsPerformanceBasedLogistics=="All PBL" & Fiscal.Year>=as.Date("2011-10-01")),
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
 
 
 ggplot(#"MaxOfIsOfficialPBL"
     data = PBLscore,
-    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL"),
-    ) + geom_bar()+#binwidth=1 + 
+    aes_string(x = "MaxOfIsPerformanceBasedLogistics", weight="Obligation.2016", fill="MaxOfIsOfficialPBL")
+    ) + geom_bar()#binwidth=1 + 
     facet_grid( . ~ AddressCat  )#,
 
 
@@ -554,7 +562,7 @@ PBLgraph<-PBLgraph+scale_y_continuous("Percentage of Obligations Towards PBL Con
 #                , weight="pObligationJ"
 #                , fill="MaxOfIsOfficialPBL"
 #                ),
-#   ) + geom_bar()+#binwidth=1+scale_fill_discrete("Official PBL Status") + 
+#   ) + geom_bar()#binwidth=1+scale_fill_discrete("Official PBL Status") + 
 #     facet_wrap(  "JointScore",scales="free_x",ncol=5,drop=FALSE) + scale_y_continuous("Percentage of Obligations Towards PBL Contracts\nFor Contracts with Corresponding Heuristic Scores", labels=percent)+
 #     scale_x_discrete("PBL Addressable Market Heuristic Score")+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -597,7 +605,7 @@ png(
     , res=150
     )
 
-
+debug(LatticePercentLineWrapper)
 PBLgraph<-LatticePercentLineWrapper(
     "Addressable PBL category"
     ,""
